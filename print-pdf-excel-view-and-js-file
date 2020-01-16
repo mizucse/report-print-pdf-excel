@@ -1,0 +1,79 @@
+//View file
+<script>
+    function PrintDiv() {
+        var divToPrint = document.getElementById('print');
+        var popupWin = window.open('', '_blank', 'width=900,height=900');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><link href="<?php echo base_url();?>assets/css/bootstrap.min.css" rel="stylesheet"><link href="<?php echo base_url();?>assets/css/font-awesome.min.css" rel="stylesheet"><link href="<?php echo base_url();?>assets/css/new_style.css" rel="stylesheet"><style>.report-print-panel table {font-size: 11px;}.report-print-panel table th,td {padding: 3px;}.report-print-panel table thead tr th {background: #E39339 !important;color: #fff !important;text-align: center;}.fa:before{color: #fff !important;}</style></head><body onload="window.print()">' + divToPrint.innerHTML + '</html>');
+        popupWin.document.close();
+    }
+    function excelPrint(){
+        $(".lists").hide();
+        $(".tr_class_b_remove").attr("class","border_remove");
+
+      window.open('data:application/vnd.ms-excel,' + encodeURIComponent(
+            $('div[id$=print]').html()
+        ));
+
+        setTimeout(function() {
+            $(".border_remove").attr("class","tr_class_b_remove");
+            $(".lists").show();
+        }, 1000);
+    }
+</script>
+<style>
+    th,td {
+        vertical-align: middle;
+    }
+    .report-logo {
+        backgroumd-color: #fff;
+    }
+    .report-company-name {
+        color: #fff ;
+    }
+</style>
+<div class="button-areas col-md-12">
+      <button class="btn btn-primary" onclick="PrintDiv()">Print</button>
+      <button class="btn btn-default" id="pdf" onclick="ExportPdf()" >PDF</button>
+      <button class="btn btn-primary" id="pdf" onclick="excelToExport('ExportToExcel')" >Export To Excel</button>      
+</div>
+
+<div class="report-print-panel export_to_excel" id="print">
+    <table class="table">
+        <tr  style="background: #E39339 !important;padding: 10px;">
+            <td class="report-logo">
+                <img class="report_header_logo" src="<?php echo base_url();?>assets/img/logo.jpg" alt="Logo">
+            </td>
+            <td class="report-company-name">
+                <h3 style=""><?php echo $row->name; ?></h3>
+            </td>
+            <td class="report-header-right">
+                <p style="color: #fff !important;margin-bottom: 0px;"> <?php echo $row->email;?> &nbsp;<i style="color: #fff !important" class="fa fa-envelope"></i></p>
+                <p style="color: #fff !important;margin-bottom: 0px;"><?php echo $row->website;?> &nbsp;<i style="color: #fff !important" class="fa fa-globe"></i></p>
+                <p style="color: #fff !important;"><?php echo $row->phone;?> &nbsp;<i style="color: #fff !important" class="fa fa-phone"></i></p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+//add excel_print.js
+
+function excelToExport(name) {
+    $(".export_to_excel").table2excel({
+        exclude: ".noExl",
+        name: name,
+        filename: name,
+        fileext: ".xls",
+    });
+
+    var html=$('.report-logo').html();
+    //alert(html);
+    $('.report_header_logo').remove();
+    $('.report-company-name').css('color','#000');
+    //var name = "1";
+    
+    setTimeout(function () {
+        $('.report-logo').append(html);
+        $('.report-company-name').css('color','#fff');
+    },3000); 
+};
